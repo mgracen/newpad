@@ -1,4 +1,4 @@
-# NewPadforMomandDad
+# New Pad for Mom & Dad
 
 Find the right place for mom and dad. WITHOUT filling out a SINGLE lead form.
 
