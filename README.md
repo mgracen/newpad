@@ -1,4 +1,4 @@
-# A New Pad for Mom & Dad
+# Find Skilled Nursing Care for Aging Parents
 
 > Find the right place for mom and dad. WITHOUT filling out a SINGLE lead form.
 
