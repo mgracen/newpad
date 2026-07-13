@@ -107,6 +107,9 @@
   .call-btn { display: block; width: 100%; padding: 14px; background: #0C2D4E; color: white; border: none; border-radius: 12px; font-family: "DM Sans",sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; margin-bottom: 10px; text-decoration: none; }
   .call-btn:hover { background: #185FA5; }
   .cms-btn { display: block; width: 100%; padding: 14px; background: transparent; color: #185FA5; border: 1.5px solid #185FA5; border-radius: 12px; font-family: "DM Sans",sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; text-align: center; text-decoration: none; }
+
+  .facility-avatar { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-family: "DM Serif Display",serif; font-size: 20px; font-weight: 600; color: white; flex-shrink: 0; }
+  .map-embed { width: 100%; height: 200px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 16px; }
 </style>
 </head>
 <body>
@@ -288,6 +291,7 @@ async function runSearch() {
         const address = toTitleCase(f.address || '');
         card.innerHTML = `
           <div class="card-top">
+            <div class="facility-avatar" style="background:${avatarColor(f.name)}">${avatarInitial(toTitleCase(f.name))}</div>
             <div class="facility-name">${toTitleCase(f.name)}</div>
             <span class="care-badge">Medicare certified</span>
           </div>
@@ -370,7 +374,18 @@ function buildDrawer(f) {
   return `
     <div class="drawer-section">
       <div style="font-family:'DM Serif Display',serif;font-size:22px;color:#0C2D4E;margin-bottom:6px;">${toTitleCase(f.name)}</div>
-      <div style="font-size:14px;color:#7A6E62;">${address}</div>
+      <div style="font-size:14px;color:#7A6E62;margin-bottom:12px;">${address}</div>
+      ${f.lat && f.lng ? `
+      <iframe class="map-embed" 
+        src="https://www.openstreetmap.org/export/embed.html?bbox=${f.lng-0.01},${f.lat-0.01},${f.lng+0.01},${f.lat+0.01}&layer=mapnik&marker=${f.lat},${f.lng}"
+        loading="lazy" title="Facility location map"></iframe>
+      <a href="https://www.openstreetmap.org/?mlat=${f.lat}&mlon=${f.lng}&zoom=15" target="_blank" 
+        style="font-size:12px;color:#185FA5;display:block;text-align:right;margin-top:-10px;margin-bottom:4px;">View larger map</a>
+      ` : `
+      <iframe class="map-embed"
+        src="https://www.openstreetmap.org/export/embed.html?query=${encodeURIComponent(address)}&layer=mapnik"
+        loading="lazy" title="Facility location map"></iframe>
+      `}
     </div>
 
     ${stars ? `
