@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANewPad - Find the Right Place for Mom and Dad</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0C2D4E;
+    --blue: #185FA5;
+    --amber: #D4860A;
+    --cream: #F8F4EE;
+    --paper: #FFFDF9;
+    --ink: #1A1208;
+    --muted: #7A6E62;
+    --border: #E4DDD4;
+    --green: #2D6A3F;
+    --light-green: #EAF3EE;
+    --light-blue: #EBF4FF;
+    --shadow: 0 2px 12px rgba(12,45,78,0.08);
+    --shadow-lg: 0 8px 32px rgba(12,45,78,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+  .header { background: var(--navy); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 26px; color: white; letter-spacing: -0.5px; }
+  .logo .logo-a { color: #FFFFFF; }
+  .logo .logo-new { color: #FFD166; }
+  .header-tag { font-size: 12px; color: rgba(255,255,255,0.55); letter-spacing: 1px; text-transform: uppercase; }
+
+  .hero { background: linear-gradient(135deg, var(--navy) 0%, #1a4a7a 100%); padding: 48px 32px 40px; text-align: center; }
+  .hero-title { font-family: 'DM Serif Display', serif; font-size: 36px; color: white; line-height: 1.2; margin-bottom: 12px; }
+  .hero-title em { color: #FFD166; font-style: italic; }
+  .hero-sub { font-size: 15px; color: rgba(255,255,255,0.75); margin-bottom: 20px; max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+  .hero-sub strong { color: white; }
+  .privacy-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 14px; }
+  .privacy-pill { display: inline-flex; align-items: center; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); border-radius: 20px; padding: 6px 14px; font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 500; }
+  .privacy-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 7px 16px; font-size: 13px; color: rgba(255,255,255,0.8); }
+
+  .search-wrap { padding: 0 20px; margin-top: -24px; position: relative; z-index: 10; }
+  .search-card { background: var(--paper); border-radius: 20px; box-shadow: var(--shadow-lg); padding: 28px; max-width: 640px; margin: 0 auto; border: 1px solid var(--border); }
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+  .field input, .field select { font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--cream); color: var(--ink); outline: none; transition: border-color 0.2s; }
+  .field input:focus, .field select:focus { border-color: var(--blue); }
+  .care-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .chip { font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; font-weight: 500; }
+  .chip.active { background: var(--light-blue); border-color: var(--blue); color: var(--navy); }
+  .trust-under { font-size: 12px; color: var(--muted); text-align: center; margin-top: 12px; line-height: 1.5; }
+  .trust-link { color: var(--blue); font-weight: 500; text-decoration: none; }
+  .search-btn { width: 100%; padding: 15px; background: var(--navy); color: white; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-bottom: 0; }
+  .search-btn:hover { background: var(--blue); }
+  .search-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .results-wrap { max-width: 640px; margin: 28px auto; padding: 0 20px 40px; }
+  .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .results-count { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--navy); }
+  .results-count span { color: var(--muted); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 400; }
+
+  .result-card { background: var(--paper); border: 1px solid var(--border); border-radius: 16px; padding: 20px 22px; margin-bottom: 14px; box-shadow: var(--shadow); }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .facility-name { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--navy); line-height: 1.3; flex: 1; }
+  .care-badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px; background: var(--light-blue); color: var(--blue); white-space: nowrap; flex-shrink: 0; }
+  .card-meta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 8px; }
+  .meta-item { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .stars { color: var(--amber); letter-spacing: 1px; }
+  .card-address { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .card-actions { display: flex; gap: 8px; border-top: 1px solid var(--border); padding-top: 14px; flex-wrap: wrap; }
+  .btn-sm { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s; }
+  .btn-outline { border: 1.5px solid var(--border); background: transparent; color: var(--muted); }
+  .btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-primary { border: none; background: var(--blue); color: white; margin-left: auto; }
+  .btn-primary:hover { background: var(--navy); }
+
+  .loading { text-align: center; padding: 48px 20px; display: none; }
+  .loading.active { display: block; }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--navy); margin-bottom: 6px; }
+  .loading-sub { font-size: 13px; color: var(--muted); }
+
+  .empty { text-align: center; padding: 48px 20px; display: none; }
+  .empty.active { display: block; }
+  .empty-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--navy); margin-bottom: 8px; }
+  .empty-sub { font-size: 14px; color: var(--muted); }
+  .disclaimer { text-align: center; font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.6; max-width: 480px; margin-left: auto; margin-right: auto; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo"><span class="logo-a">A</span><span class="logo-new">New</span>Pad</div>
+  <div class="header-tag">getnewpad.com</div>
+</div>
+
+<div class="hero">
+  <div class="hero-title">Find the right place for mom and dad.<br><em>Keep your sanity.</em></div>
+  <div class="hero-sub">Search independent living, assisted living, memory care facilities<br>and more - <strong>WITHOUT</strong> filling out a <strong>SINGLE</strong> lead form.</div>
+  <div class="privacy-pills">
+    <span class="privacy-pill">NO account needed</span>
+    <span class="privacy-pill">NO sales calls</span>
+    <span class="privacy-pill">NO spam texts or emails</span>
+  </div>
+  <div class="privacy-badge">Your info never leaves this page.</div>
+</div>
+
+<div class="search-wrap">
+  <div class="search-card">
+    <div class="field-grid">
+      <div class="field">
+        <label>City or Zip Code</label>
+        <input type="text" id="location" placeholder="e.g. Orlando or 32801" />
+      </div>
+      <div class="field">
+        <label>Monthly Budget</label>
+        <select id="budget">
+          <option value="under3k">Under $3,000/mo</option>
+          <option value="3to5k" selected>$3,000 - $5,000/mo</option>
+          <option value="5to7k">$5,000 - $7,000/mo</option>
+          <option value="over7k">$7,000+/mo</option>
+          <option value="unknown">Not sure yet</option>
+        </select>
+      </div>
+    </div>
+    <div class="care-label">Type of care needed</div>
+    <div class="chips" id="chips">
+      <button class="chip active" data-val="assisted_living">Assisted living</button>
+      <button class="chip active" data-val="independent_living">Independent living</button>
+      <button class="chip" data-val="memory_care">Memory care</button>
+      <button class="chip" data-val="skilled_nursing">Skilled nursing</button>
+      <button class="chip" data-val="in_home_care">In-home care</button>
+      <button class="chip" data-val="respite_care">Respite care</button>
+    </div>
+    <button class="search-btn" id="searchBtn" onclick="runSearch()">Find options near me</button>
+    <div class="trust-under">Facility data sourced directly from the U.S. government's <a href="https://www.medicare.gov/care-compare" target="_blank" class="trust-link">Medicare Care Compare</a> database</div>
+  </div>
+</div>
+
+<div class="results-wrap" id="resultsWrap" style="display:none">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Searching facilities...</div>
+    <div class="loading-sub">Checking Medicare Care Compare data</div>
+  </div>
+  <div id="resultsHeader" style="display:none">
+    <div class="results-header">
+      <div class="results-count" id="resultsCount"></div>
+    </div>
+  </div>
+  <div id="resultsList"></div>
+  <div class="empty" id="emptyState">
+    <div class="empty-title">No results found</div>
+    <div class="empty-sub" id="emptyMsg">Try a different zip code or city name.</div>
+  </div>
+  <div class="disclaimer" id="disclaimer" style="display:none">
+    Data sourced from <a href="https://www.medicare.gov/care-compare" target="_blank" class="trust-link">Medicare Care Compare</a>. Always visit in person before making a decision.
+  </div>
+</div>
+
+<script>
+const BACKEND = 'https://newpad-backend-production.up.railway.app';
+
+// Common city to zip lookup
+const CITY_ZIP = {
+  'orlando': '32801', 'miami': '33101', 'tampa': '33601',
+  'jacksonville': '32099', 'atlanta': '30301', 'new york': '10001',
+  'los angeles': '90001', 'chicago': '60601', 'houston': '77001',
+  'dallas': '75201', 'phoenix': '85001', 'denver': '80201',
+  'boston': '02101', 'seattle': '98101', 'nashville': '37201',
+  'charlotte': '28201', 'austin': '78701', 'las vegas': '89101',
+  'portland': '97201', 'minneapolis': '55401', 'detroit': '48201',
+  'cleveland': '44101', 'pittsburgh': '15201', 'memphis': '38101',
+  'louisville': '40201', 'baltimore': '21201', 'milwaukee': '53201',
+  'columbus': '43201', 'kansas city': '64101', 'sacramento': '94201',
+  'san antonio': '78201', 'san diego': '92101', 'fresno': '93701',
+  'albuquerque': '87101', 'tucson': '85701', 'omaha': '68101',
+};
+
+function resolveZip(input) {
+  if (!input) return null;
+  const clean = input.trim();
+  const zipMatch = clean.match(/\b(\d{5})\b/);
+  if (zipMatch) return zipMatch[1];
+  const city = clean.toLowerCase().replace(/,.*$/, '').trim();
+  return CITY_ZIP[city] || null;
+}
+
+function toTitleCase(str) {
+  if (!str) return '';
+  return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function starString(n) {
+  if (!n) return '';
+  const num = parseInt(n);
+  return '★'.repeat(Math.min(5, num)) + '☆'.repeat(5 - Math.min(5, num));
+}
+
+// Toggle chips
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => chip.classList.toggle('active'));
+});
+
+// Enter key support
+document.getElementById('location').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') runSearch();
+});
+
+function getCareLabel(type) {
+  if (!type) return 'Skilled nursing';
+  const t = type.toLowerCase();
+  if (t.includes('assisted')) return 'Assisted living';
+  if (t.includes('memory') || t.includes('dementia') || t.includes('alzheimer')) return 'Memory care';
+  if (t.includes('independent')) return 'Independent living';
+  if (t.includes('continuing') || t.includes('ccrc')) return 'Continuing care';
+  if (t.includes('home')) return 'In-home care';
+  return 'Skilled nursing';
+}
+
+async function runSearch() {
+  const locationInput = document.getElementById('location').value.trim();
+  const careTypes = [...document.querySelectorAll('.chip.active')].map(c => c.dataset.val);
+
+  if (!locationInput) {
+    alert('Please enter a city name or zip code.');
+    return;
+  }
+
+  const zip = resolveZip(locationInput);
+  if (!zip) {
+    alert('Please enter a valid zip code (32801) or city name (Orlando).');
+    return;
+  }
+
+  if (!careTypes.length) {
+    alert('Please select at least one type of care.');
+    return;
+  }
+
+  const btn = document.getElementById('searchBtn');
+  btn.disabled = true;
+  btn.textContent = 'Searching...';
+
+  document.getElementById('resultsWrap').style.display = 'block';
+  document.getElementById('loading').classList.add('active');
+  document.getElementById('resultsHeader').style.display = 'none';
+  document.getElementById('resultsList').innerHTML = '';
+  document.getElementById('emptyState').classList.remove('active');
+  document.getElementById('disclaimer').style.display = 'none';
+
+  try {
+    const response = await fetch(BACKEND + '/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ zip, careTypes })
+    });
+
+    if (!response.ok) throw new Error('Server error ' + response.status);
+    const data = await response.json();
+
+    document.getElementById('loading').classList.remove('active');
+
+    const facilities = data.results || [];
+
+    if (facilities.length === 0) {
+      document.getElementById('emptyState').classList.add('active');
+      document.getElementById('emptyMsg').textContent = 'No facilities found near ' + locationInput + '. Try a nearby zip code.';
+    } else {
+      document.getElementById('resultsHeader').style.display = 'block';
+      document.getElementById('resultsCount').innerHTML =
+        facilities.length + ' options found <span>near ' + locationInput + '</span>';
+
+      const list = document.getElementById('resultsList');
+      facilities.forEach((f, i) => {
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        const stars = starString(f.cms_star_rating);
+        const cityState = [toTitleCase(f.city), f.state].filter(Boolean).join(', ');
+        const address = toTitleCase(f.address || '');
+        card.innerHTML = `
+          <div class="card-top">
+            <div class="facility-name">${toTitleCase(f.name)}</div>
+            <span class="care-badge">${getCareLabel(f.provider_type)}</span>
+          </div>
+          <div class="card-meta">
+            ${stars ? `<span class="meta-item stars">${stars}</span><span class="meta-item">${f.cms_star_rating}/5 CMS</span>` : '<span class="meta-item">No rating available</span>'}
+            ${f.capacity ? `<span class="meta-item">${f.capacity} beds</span>` : ''}
+          </div>
+          <div class="card-address">${address}${cityState ? ', ' + cityState : ''}${f.zip ? ' ' + f.zip : ''}</div>
+          <div class="card-actions">
+            <button class="btn-sm btn-outline" onclick="toggleSave(${JSON.stringify(f).replace(/"/g, '&quot;')}, this)">Save</button>
+            ${f.phone ? `<button class="btn-sm btn-outline" onclick="window.location='tel:${f.phone}'">Call ${f.phone}</button>` : ''}
+            <button class="btn-sm btn-primary">View details</button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+
+      document.getElementById('disclaimer').style.display = 'block';
+    }
+
+  } catch (err) {
+    document.getElementById('loading').classList.remove('active');
+    document.getElementById('emptyState').classList.add('active');
+    document.getElementById('emptyMsg').textContent = 'Search failed: ' + err.message + '. Please try again.';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Find options near me';
+}
+
+// Save to localStorage
+function getSaved() { return JSON.parse(localStorage.getItem('newpad_saved') || '[]'); }
+function setSaved(a) { localStorage.setItem('newpad_saved', JSON.stringify(a)); }
+
+function toggleSave(facility, btn) {
+  const saved = getSaved();
+  const idx = saved.findIndex(f => f.id === facility.id);
+  if (idx > -1) {
+    saved.splice(idx, 1);
+    btn.textContent = 'Save';
+  } else {
+    saved.push(facility);
+    btn.textContent = 'Saved!';
+    btn.style.color = '#185FA5';
+  }
+  setSaved(saved);
+}
+</script>
+</body>
+</html>
