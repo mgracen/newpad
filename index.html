@@ -184,6 +184,17 @@
 const BACKEND = 'https://newpad-backend-production.up.railway.app';
 
 // Common city to zip lookup
+
+const AVATAR_COLORS = ['#185FA5','#0C2D4E','#2D6A3F','#7B3F8C','#C05A1F','#8B7355','#1A5C8C','#4A7C59'];
+function avatarColor(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+function avatarInitial(name) {
+  return name ? name.trim()[0].toUpperCase() : '?';
+}
+
 const CITY_ZIP = {
   'orlando': '32801', 'miami': '33101', 'tampa': '33601',
   'jacksonville': '32099', 'atlanta': '30301', 'new york': '10001',
