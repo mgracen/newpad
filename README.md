@@ -1,7 +1,5 @@
 # Find Skilled Nursing Care for Aging Parents
 
-> Find the right place for mom and dad. WITHOUT filling out a SINGLE lead form.
-
 Search Medicare-certified skilled nursing and rehabilitation facilities near you. No account. No sales calls. No spam. Just results.
 
 Built by [Mike Gracen](https://github.com/mgracen).
