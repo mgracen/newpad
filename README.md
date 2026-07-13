@@ -1,4 +1,4 @@
-# New Pad for Mom & Dad
+# Find Skilled Nursing for Aging Parents
 
 Medicare-certified skilled nursing and rehab search, powered by government data, no lead forms. 
 
