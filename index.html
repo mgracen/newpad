@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Find Skilled Nursing Care for Aging Parents</title>
+<title>Find Skilled Care - Free Senior Care Search. No Lead Forms. No Sales Calls.</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -90,13 +91,29 @@
   .empty-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--navy); margin-bottom: 8px; }
   .empty-sub { font-size: 14px; color: var(--muted); }
   .disclaimer { text-align: center; font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.6; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+  @media (max-width: 480px) {
+    #detailDrawer { max-width: 100%; }
+  }
+  .drawer-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #E4DDD4; }
+  .drawer-section:last-child { border-bottom: none; }
+  .drawer-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #7A6E62; margin-bottom: 8px; }
+  .drawer-value { font-size: 15px; color: #1A1208; line-height: 1.5; }
+  .drawer-stars { font-size: 20px; color: #D4860A; }
+  .rating-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  .rating-item { background: #F8F4EE; border-radius: 10px; padding: 12px; text-align: center; }
+  .rating-item .score { font-size: 24px; font-weight: 600; color: #0C2D4E; }
+  .rating-item .label { font-size: 11px; color: #7A6E62; margin-top: 2px; }
+  .call-btn { display: block; width: 100%; padding: 14px; background: #0C2D4E; color: white; border: none; border-radius: 12px; font-family: "DM Sans",sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; margin-bottom: 10px; text-decoration: none; }
+  .call-btn:hover { background: #185FA5; }
+  .cms-btn { display: block; width: 100%; padding: 14px; background: transparent; color: #185FA5; border: 1.5px solid #185FA5; border-radius: 12px; font-family: "DM Sans",sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; text-align: center; text-decoration: none; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="logo"><span class="logo-a">A New Pad</span><br><span class="logo-sub">for Mom &amp; Dad</span></div>
-  <div class="header-tag">getnewpad.com</div>
+  <div class="logo"><span class="logo-a">Find</span><span class="logo-new"> Skilled Care</span></div>
+  
 </div>
 
 <div class="hero">
@@ -282,7 +299,7 @@ async function runSearch() {
           <div class="card-actions">
             <button class="btn-sm btn-outline" onclick="toggleSave(${JSON.stringify(f).replace(/"/g, '&quot;')}, this)">Save</button>
             ${f.phone ? `<button class="btn-sm btn-outline" onclick="window.location='tel:${f.phone}'">Call ${f.phone}</button>` : ''}
-            <button class="btn-sm btn-primary">View details</button>
+            <button class="btn-sm btn-primary" onclick="openDrawer('${f.id}')">View details</button>
           </div>
         `;
         list.appendChild(card);
@@ -318,6 +335,91 @@ function toggleSave(facility, btn) {
   }
   setSaved(saved);
 }
+
+function openDrawer(facilityId) {
+  document.getElementById('drawerOverlay').style.display = 'block';
+  document.getElementById('detailDrawer').style.display = 'block';
+  document.getElementById('drawerLoading').style.display = 'block';
+  document.getElementById('drawerBody').style.display = 'none';
+  document.body.style.overflow = 'hidden';
+
+  fetch(BACKEND + '/facility/' + facilityId)
+    .then(r => r.json())
+    .then(f => {
+      document.getElementById('drawerLoading').style.display = 'none';
+      document.getElementById('drawerBody').style.display = 'block';
+      document.getElementById('drawerBody').innerHTML = buildDrawer(f);
+    })
+    .catch(err => {
+      document.getElementById('drawerLoading').style.display = 'none';
+      document.getElementById('drawerBody').style.display = 'block';
+      document.getElementById('drawerBody').innerHTML = '<p style="color:#C0392B">Could not load details. Please try again.</p>';
+    });
+}
+
+function closeDrawer() {
+  document.getElementById('drawerOverlay').style.display = 'none';
+  document.getElementById('detailDrawer').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function buildDrawer(f) {
+  const stars = f.cms_star_rating ? '★'.repeat(f.cms_star_rating) + '☆'.repeat(5 - f.cms_star_rating) : null;
+  const address = [toTitleCase(f.address), toTitleCase(f.city), f.state, f.zip].filter(Boolean).join(', ');
+
+  return `
+    <div class="drawer-section">
+      <div style="font-family:'DM Serif Display',serif;font-size:22px;color:#0C2D4E;margin-bottom:6px;">${toTitleCase(f.name)}</div>
+      <div style="font-size:14px;color:#7A6E62;">${address}</div>
+    </div>
+
+    ${stars ? `
+    <div class="drawer-section">
+      <div class="drawer-label">Medicare star rating</div>
+      <div class="drawer-stars">${stars}</div>
+      <div style="font-size:13px;color:#7A6E62;margin-top:4px;">${f.cms_star_rating}/5 - from Medicare Care Compare</div>
+      ${f.staffing_rating || f.health_inspection_rating ? `
+      <div class="rating-grid">
+        ${f.health_inspection_rating ? `<div class="rating-item"><div class="score">${'★'.repeat(f.health_inspection_rating)}</div><div class="label">Health inspections</div></div>` : ''}
+        ${f.staffing_rating ? `<div class="rating-item"><div class="score">${'★'.repeat(f.staffing_rating)}</div><div class="label">Staffing</div></div>` : ''}
+      </div>` : ''}
+    </div>` : ''}
+
+    ${f.capacity ? `
+    <div class="drawer-section">
+      <div class="drawer-label">Facility info</div>
+      <div class="drawer-value">${f.capacity} certified beds</div>
+      ${f.ownership_type ? `<div style="font-size:13px;color:#7A6E62;margin-top:4px;">${f.ownership_type}</div>` : ''}
+    </div>` : ''}
+
+    <div class="drawer-section">
+      <div class="drawer-label">Contact this facility directly</div>
+      <div style="font-size:13px;color:#7A6E62;margin-bottom:14px;">Your info is never shared with anyone else.</div>
+      ${f.phone ? `<a href="tel:${f.phone}" class="call-btn">Call ${f.phone}</a>` : ''}
+      ${f.medicare_link ? `<a href="${f.medicare_link}" target="_blank" class="cms-btn">View on Medicare.gov</a>` : ''}
+    </div>
+
+    <div style="font-size:11px;color:#aaa;text-align:center;line-height:1.6;">
+      Data from <a href="https://www.medicare.gov/care-compare" target="_blank" style="color:#185FA5;">Medicare Care Compare</a>. Always visit in person before making a decision.
+    </div>
+  `;
+}
 </script>
+
+<!-- Detail Drawer -->
+<div id="drawerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;" onclick="closeDrawer()"></div>
+<div id="detailDrawer" style="display:none;position:fixed;right:0;top:0;bottom:0;width:100%;max-width:480px;background:#FFFDF9;z-index:101;overflow-y:auto;box-shadow:-8px 0 32px rgba(0,0,0,0.15);">
+  <div style="padding:20px 24px;border-bottom:1px solid #E4DDD4;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-family:'DM Serif Display',serif;font-size:20px;color:#0C2D4E;">Facility Details</div>
+    <button onclick="closeDrawer()" style="border:none;background:none;font-size:24px;color:#7A6E62;cursor:pointer;">✕</button>
+  </div>
+  <div id="drawerContent" style="padding:24px;">
+    <div id="drawerLoading" style="text-align:center;padding:40px 0;">
+      <div class="spinner"></div>
+      <div style="color:#7A6E62;font-size:14px;margin-top:12px;">Loading details...</div>
+    </div>
+    <div id="drawerBody" style="display:none;"></div>
+  </div>
+</div>
 </body>
 </html>
