@@ -101,7 +101,7 @@
 
 <div class="hero">
   <div class="hero-title">Find the right place for mom and dad.<br><em>Keep your sanity.</em></div>
-  <div class="hero-sub">Search independent living, assisted living, memory care facilities<br>and more - <strong>WITHOUT</strong> filling out a <strong>SINGLE</strong> lead form.</div>
+  <div class="hero-sub">Search skilled nursing and rehabilitation facilities near you - <strong>WITHOUT</strong> filling out a <strong>SINGLE</strong> lead form.</div>
   <div class="privacy-pills">
     <span class="privacy-pill">NO account needed</span>
     <span class="privacy-pill">NO sales calls</span>
@@ -130,13 +130,10 @@
     </div>
     <div class="care-label">Type of care needed</div>
     <div class="chips" id="chips">
-      <button class="chip active" data-val="assisted_living">Assisted living</button>
-      <button class="chip active" data-val="independent_living">Independent living</button>
-      <button class="chip" data-val="memory_care">Memory care</button>
-      <button class="chip" data-val="skilled_nursing">Skilled nursing</button>
-      <button class="chip" data-val="in_home_care">In-home care</button>
-      <button class="chip" data-val="respite_care">Respite care</button>
+      <button class="chip active" data-val="skilled_nursing">Skilled nursing</button>
+      <button class="chip active" data-val="nursing_rehab">Nursing &amp; rehab</button>
     </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Currently searching Medicare-certified nursing facilities. Assisted living &amp; memory care coming soon.</p>
     <button class="search-btn" id="searchBtn" onclick="runSearch()">Find options near me</button>
     <div class="trust-under">Facility data sourced directly from the U.S. government's <a href="https://www.medicare.gov/care-compare" target="_blank" class="trust-link">Medicare Care Compare</a> database</div>
   </div>
@@ -212,17 +209,6 @@ document.getElementById('location').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') runSearch();
 });
 
-function getCareLabel(type) {
-  if (!type) return 'Skilled nursing';
-  const t = type.toLowerCase();
-  if (t.includes('assisted')) return 'Assisted living';
-  if (t.includes('memory') || t.includes('dementia') || t.includes('alzheimer')) return 'Memory care';
-  if (t.includes('independent')) return 'Independent living';
-  if (t.includes('continuing') || t.includes('ccrc')) return 'Continuing care';
-  if (t.includes('home')) return 'In-home care';
-  return 'Skilled nursing';
-}
-
 async function runSearch() {
   const locationInput = document.getElementById('location').value.trim();
   const careTypes = [...document.querySelectorAll('.chip.active')].map(c => c.dataset.val);
@@ -286,7 +272,7 @@ async function runSearch() {
         card.innerHTML = `
           <div class="card-top">
             <div class="facility-name">${toTitleCase(f.name)}</div>
-            <span class="care-badge">${getCareLabel(f.provider_type)}</span>
+            <span class="care-badge">Medicare certified</span>
           </div>
           <div class="card-meta">
             ${stars ? `<span class="meta-item stars">${stars}</span><span class="meta-item">${f.cms_star_rating}/5 CMS</span>` : '<span class="meta-item">No rating available</span>'}
