@@ -1,8 +1,8 @@
 # New Pad for Mom & Dad
 
-Find the right place for mom and dad. WITHOUT filling out a SINGLE lead form.
+Medicare-certified skilled nursing and rehab search, powered by government data, no lead forms. 
 
-Search independent living, assisted living, memory care facilities and more - powered by real Medicare Care Compare data. No accounts. No sales calls. No spam.
+No accounts. No sales calls. No spam.
 
 Built by [Mike Gracen](https://github.com/mgracen).
 
