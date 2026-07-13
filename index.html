@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Find Skilled Care - Free Senior Care Search</title>
+<title>Find Skilled Care - Free Senior Care Search. No Lead Forms. No Sales Calls.</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -314,7 +314,7 @@ async function runSearch() {
           <div class="card-actions">
             <button class="btn-sm btn-outline" onclick="toggleSave(${JSON.stringify(f).replace(/"/g, '&quot;')}, this)">Save</button>
             ${f.phone ? `<button class="btn-sm btn-outline" onclick="window.location='tel:${f.phone}'">Call ${f.phone}</button>` : ''}
-            <button class="btn-sm btn-primary" onclick="openDrawer('${f.id}')">View details</button>
+            <button class="btn-sm btn-primary" onclick="openDrawer('${f.id}', ${f.lat || 'null'}, ${f.lng || 'null'})">View details</button>
           </div>
         `;
         list.appendChild(card);
@@ -351,7 +351,7 @@ function toggleSave(facility, btn) {
   setSaved(saved);
 }
 
-function openDrawer(facilityId) {
+function openDrawer(facilityId, searchLat, searchLng) {
   document.getElementById('drawerOverlay').style.display = 'block';
   document.getElementById('detailDrawer').style.display = 'block';
   document.getElementById('drawerLoading').style.display = 'block';
@@ -361,6 +361,9 @@ function openDrawer(facilityId) {
   fetch(BACKEND + '/facility/' + facilityId)
     .then(r => r.json())
     .then(f => {
+      // Use lat/lng from search result if API doesn't return them
+      if (!f.lat && searchLat) f.lat = searchLat;
+      if (!f.lng && searchLng) f.lng = searchLng;
       document.getElementById('drawerLoading').style.display = 'none';
       document.getElementById('drawerBody').style.display = 'block';
       document.getElementById('drawerBody').innerHTML = buildDrawer(f);
